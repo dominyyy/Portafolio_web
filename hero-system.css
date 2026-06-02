@@ -1,0 +1,502 @@
+/* ══════════════════════════════════════════════════════════════════
+   HERO SYSTEM · Portafolio EA3 · Dominy Cadena · USCO · 2026
+   Sistema unificado y elegante para todos los encabezados de proyecto
+   Sobrescribe y unifica hero-p1 / hero-p4 / proy-hero con una sola
+   fuente de verdad: limpio, sin redundancia, combinado perfectamente.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. ESTRUCTURA PRINCIPAL ─────────────────────────────────────── */
+
+.proj-hero,
+.proy-hero,
+.hero-p1,
+.hero-p4 {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 55% 45%;
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+  padding-top: var(--nav-h);
+}
+
+/* ── 2. COLUMNA IZQUIERDA — contenido textual ─────────────────────── */
+
+.proj-hero-left,
+.proy-hero-left,
+.hero-p1-left,
+.hero-p4-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5.5rem 4rem 4.5rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Separador derecho sutil */
+.proj-hero-left::after,
+.proy-hero-left::after,
+.hero-p1-left::after,
+.hero-p4-left::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 12%;
+  bottom: 12%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 232, 122, .12) 30%,
+    rgba(0, 232, 122, .12) 70%,
+    transparent
+  );
+}
+
+/* ── 3. COLUMNA DERECHA — panel de visualización ─────────────────── */
+
+.proj-hero-right,
+.proy-hero-right,
+.hero-p1-right,
+.hero-p4-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 3rem;
+  background: var(--ink2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Grid sutil en panel derecho */
+.proj-hero-right::before,
+.proy-hero-right::before,
+.hero-p1-right::before,
+.hero-p4-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 232, 122, .025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 232, 122, .025) 1px, transparent 1px);
+  background-size: 44px 44px;
+  pointer-events: none;
+}
+
+/* ── 4. BREADCRUMB ──────────────────────────────────────────────── */
+
+.proj-breadcrumb,
+.proy-breadcrumb,
+.breadcrumb {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .52rem;
+  letter-spacing: .5em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: .75rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.proj-breadcrumb a,
+.proy-breadcrumb a,
+.breadcrumb a {
+  color: var(--green-dim);
+  text-decoration: none;
+  transition: color .2s;
+}
+
+.proj-breadcrumb a:hover,
+.proy-breadcrumb a:hover,
+.breadcrumb a:hover { color: var(--green); }
+
+.proj-breadcrumb span,
+.proy-breadcrumb span { color: rgba(0, 232, 122, .25); }
+
+/* ── 5. NÚMERO DE PROYECTO ─────────────────────────────────────── */
+
+.proj-num,
+.proy-num,
+.project-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .56rem;
+  letter-spacing: .52em;
+  color: rgba(0, 232, 122, .25);
+  margin-bottom: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+}
+
+.proj-num::before,
+.proy-num::before,
+.project-num::before {
+  content: '';
+  display: inline-block;
+  width: 22px;
+  height: 1px;
+  background: rgba(0, 232, 122, .28);
+  flex-shrink: 0;
+}
+
+/* ── 6. TÍTULO PRINCIPAL ───────────────────────────────────────── */
+
+.proj-title,
+.proy-title,
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 4vw, 3.7rem);
+  line-height: 1.05;
+  color: var(--white);
+  margin-bottom: 1.4rem;
+  letter-spacing: -.015em;
+}
+
+.proj-title em,
+.proy-title em,
+.hero-title em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--green);
+  letter-spacing: 0;
+}
+
+/* ── 7. DESCRIPCIÓN ────────────────────────────────────────────── */
+
+.proj-desc,
+.proy-hero-desc,
+.hero-p1-desc,
+.hero-p4-desc {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--text-dim);
+  max-width: 450px;
+  margin-bottom: 1.8rem;
+  padding-left: 1.1rem;
+  border-left: 2px solid rgba(0, 232, 122, .18);
+}
+
+/* ── 8. STATUS BADGES ──────────────────────────────────────────── */
+
+.status-row {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  margin-bottom: 1.8rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .48rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  padding: .26rem .85rem;
+  border: 1px solid;
+}
+
+.badge-ok   {
+  background: rgba(0, 201, 102, .07);
+  color: var(--ok);
+  border-color: rgba(0, 201, 102, .2);
+}
+.badge-info {
+  background: rgba(0, 232, 122, .05);
+  color: var(--green-dim);
+  border-color: rgba(0, 232, 122, .15);
+}
+
+.status-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .5rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  padding: .26rem .85rem;
+  margin-bottom: .9rem;
+}
+.status-completado {
+  background: rgba(0, 201, 102, .07);
+  color: var(--ok);
+  border: 1px solid rgba(0, 201, 102, .2);
+}
+.status-desarrollo {
+  background: rgba(0, 232, 122, .05);
+  color: var(--green);
+  border: 1px solid rgba(0, 232, 122, .15);
+}
+
+/* ── 9. META GRID ──────────────────────────────────────────────── */
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid rgba(0, 232, 122, .1);
+  margin-top: .25rem;
+}
+
+.meta-cell {
+  padding: .85rem 1.2rem;
+  border-bottom: 1px solid rgba(0, 232, 122, .06);
+  border-right: 1px solid rgba(0, 232, 122, .06);
+  transition: background .2s;
+}
+.meta-cell:nth-child(even) { border-right: none; }
+.meta-cell:hover { background: rgba(0, 232, 122, .022); }
+
+.meta-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .46rem;
+  letter-spacing: .4em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: .28rem;
+}
+.meta-val {
+  font-size: .72rem;
+  color: var(--text);
+  letter-spacing: .025em;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* ── 10. SCAN + CORNER BRACKETS ────────────────────────────────── */
+
+.hero-scan {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--green), transparent);
+  animation: hscan 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 3;
+  opacity: .4;
+}
+
+@keyframes hscan {
+  0%   { top: -2px; opacity: 0; }
+  20%  { opacity: .4; }
+  80%  { opacity: .1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.hero-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(0, 232, 122, .28);
+  border-style: solid;
+}
+.hero-corner.tl { top: 1.4rem; left: 1.4rem; border-width: 1px 0 0 1px; }
+.hero-corner.tr { top: 1.4rem; right: 1.4rem; border-width: 1px 1px 0 0; }
+.hero-corner.bl { bottom: 1.4rem; left: 1.4rem; border-width: 0 0 1px 1px; }
+.hero-corner.br { bottom: 1.4rem; right: 1.4rem; border-width: 0 1px 1px 0; }
+
+/* ── 11. KANJI DECORATIVO — más sutil ──────────────────────────── */
+
+.deco-kanji {
+  position: absolute;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: rgba(0, 232, 122, .022);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* ── 12. TEMA CLARO (body.proyecto-page) ────────────────────────── */
+
+body.proyecto-page .proj-hero,
+body.proyecto-page .proy-hero,
+body.proyecto-page .hero-p1,
+body.proyecto-page .hero-p4 {
+  background: var(--light-bg);
+}
+
+body.proyecto-page .proj-hero-left,
+body.proyecto-page .proy-hero-left,
+body.proyecto-page .hero-p1-left,
+body.proyecto-page .hero-p4-left {
+  background: var(--light-bg);
+}
+
+body.proyecto-page .proj-hero-right,
+body.proyecto-page .proy-hero-right,
+body.proyecto-page .hero-p1-right,
+body.proyecto-page .hero-p4-right {
+  background: var(--ink);
+}
+
+/* textos en zona clara */
+body.proyecto-page .proj-breadcrumb,
+body.proyecto-page .proy-breadcrumb,
+body.proyecto-page .breadcrumb {
+  color: var(--light-text-faint);
+}
+body.proyecto-page .proj-breadcrumb a,
+body.proyecto-page .proy-breadcrumb a,
+body.proyecto-page .breadcrumb a { color: var(--green-dim); }
+
+body.proyecto-page .proj-num,
+body.proyecto-page .proy-num,
+body.proyecto-page .project-num {
+  color: rgba(0, 160, 80, .3);
+}
+body.proyecto-page .proj-num::before,
+body.proyecto-page .proy-num::before,
+body.proyecto-page .project-num::before {
+  background: rgba(0, 160, 80, .25);
+}
+
+body.proyecto-page .proj-title,
+body.proyecto-page .proy-title,
+body.proyecto-page .hero-title { color: var(--light-text); }
+
+body.proyecto-page .proj-desc,
+body.proyecto-page .proy-hero-desc,
+body.proyecto-page .hero-p1-desc,
+body.proyecto-page .hero-p4-desc {
+  color: var(--light-text-dim);
+  border-left-color: rgba(0, 180, 80, .18);
+}
+
+body.proyecto-page .meta-grid {
+  border-color: rgba(0, 180, 80, .1);
+}
+body.proyecto-page .meta-cell {
+  border-bottom-color: rgba(0, 180, 80, .06);
+  border-right-color: rgba(0, 180, 80, .06);
+}
+body.proyecto-page .meta-cell:hover { background: rgba(0, 180, 80, .025); }
+body.proyecto-page .meta-label { color: var(--light-text-faint); }
+body.proyecto-page .meta-val { color: var(--light-text2); }
+
+body.proyecto-page .status-row { margin-bottom: 1.8rem; }
+
+/* ── 13. RESPONSIVE ─────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .proj-hero,
+  .proy-hero,
+  .hero-p1,
+  .hero-p4 {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .proj-hero-right,
+  .proy-hero-right,
+  .hero-p1-right,
+  .hero-p4-right {
+    min-height: 45vh;
+    padding: 3rem 2.5rem;
+  }
+
+  .proj-hero-left,
+  .proy-hero-left,
+  .hero-p1-left,
+  .hero-p4-left {
+    padding: 4rem 2.5rem 3rem;
+  }
+
+  .proj-hero-left::after,
+  .proy-hero-left::after,
+  .hero-p1-left::after,
+  .hero-p4-left::after { display: none; }
+
+  .proj-title,
+  .proy-title,
+  .hero-title { font-size: clamp(2rem, 6vw, 3rem); }
+}
+
+@media (max-width: 768px) {
+  .meta-grid { grid-template-columns: 1fr; }
+  .meta-cell:nth-child(even) { border-right: none; }
+  .meta-cell { border-right: none; }
+}
+
+/* ── 14. ACENTOS DE COLOR POR PROYECTO ─────────────────────────────
+   Cada proyecto tiene un acento sutil en la barra superior del hero
+   para diferenciarlo visualmente sin romper la coherencia del sistema
+   ─────────────────────────────────────────────────────────────────── */
+
+/* Barra de acento superior: línea fina verde que recorre todo el ancho */
+.proj-hero-left::before,
+.proy-hero-left::before,
+.hero-p1-left::before,
+.hero-p4-left::before {
+  /* Reemplaza el pseudo-elemento con la barra de acento en la parte superior */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    var(--green) 0%,
+    rgba(0, 232, 122, .4) 60%,
+    transparent 100%
+  );
+  z-index: 2;
+}
+
+/* El número de fondo ahora usa ::after para no colisionar */
+.proj-hero-left,
+.proy-hero-left,
+.hero-p1-left,
+.hero-p4-left {
+  position: relative;
+}
+
+/* Número decorativo como elemento span dentro del HTML — ver más abajo */
+/* El .deco-num reemplaza el uso de ::before para el número */
+.deco-num {
+  position: absolute;
+  right: -1rem;
+  bottom: -1.5rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(10rem, 16vw, 15rem);
+  line-height: 1;
+  color: rgba(0, 232, 122, .025);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -.04em;
+  z-index: 0;
+}
+
+/* En tema claro el número de fondo también se adapta */
+body.proyecto-page .deco-num {
+  color: rgba(0, 160, 80, .045);
+}
+
+/* ── 15. ESPACIADO VERTICAL ARMONIOSO ───────────────────────────── */
+
+.proj-breadcrumb,
+.proy-breadcrumb,
+.breadcrumb { margin-bottom: .6rem; }
+
+.proj-num,
+.proy-num,
+.project-num { margin-bottom: 1rem; }
+
+.proj-title,
+.proy-title,
+.hero-title { margin-bottom: 1.2rem; }
+
+.proj-desc,
+.proy-hero-desc,
+.hero-p1-desc,
+.hero-p4-desc { margin-bottom: 1.6rem; }
+
+.status-row { margin-bottom: 1.6rem; }

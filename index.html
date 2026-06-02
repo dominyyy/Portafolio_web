@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portafolio · Dominy Cadena · Ingeniería Electrónica · EA3 · USCO 2026</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+<style>
+/* ── INTRO ── */
+#intro-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--white);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2rem;
+}
+#intro-monogram {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5rem; font-weight: 300;
+  color: var(--blue); letter-spacing: 0.08em; line-height: 1;
+  animation: fadeInUp 0.8s ease forwards;
+}
+#intro-name {
+  font-family: 'DM Mono', monospace; font-size: 0.6rem;
+  letter-spacing: 0.45em; text-transform: uppercase;
+  color: var(--text-faint);
+  animation: fadeInUp 0.8s ease 0.2s forwards; opacity: 0;
+}
+#intro-bar-track {
+  width: 200px; height: 1px; background: var(--line);
+  position: relative; overflow: hidden;
+}
+#intro-bar-fill { height: 100%; width: 0%; background: var(--blue); transition: width 0.04s linear; }
+#intro-screen.exit { transition: opacity 0.5s ease; opacity: 0; pointer-events: none; }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── FOTO PERFIL ── */
+.profile-photo-wrap {
+  display: flex; justify-content: center; margin-bottom: 2rem;
+}
+.profile-photo {
+  width: 160px; height: 160px; border-radius: 50%;
+  object-fit: cover; border: 3px solid var(--blue);
+  box-shadow: 0 8px 32px rgba(37,99,235,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.profile-photo:hover { transform: scale(1.04); box-shadow: 0 12px 40px rgba(37,99,235,0.25); }
+.profile-photo-placeholder {
+  width: 160px; height: 160px; border-radius: 50%;
+  border: 2px dashed var(--blue);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.5rem;
+  color: var(--text-faint); font-size: 0.7rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: rgba(37,99,235,0.04);
+  transition: border-color 0.2s;
+}
+.profile-photo-placeholder svg { width: 36px; height: 36px; opacity: 0.3; }
+
+/* ── PROYECTOS DESPLEGABLES ── */
+.proyectos-accordion { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 2.5rem; }
+
+.proy-accordion-item {
+  border: 1px solid var(--line); border-radius: 12px;
+  overflow: hidden; background: var(--white);
+  transition: box-shadow 0.25s ease;
+}
+.proy-accordion-item:hover { box-shadow: 0 6px 24px rgba(37,99,235,0.08); }
+
+.proy-accordion-header {
+  display: flex; align-items: flex-start; gap: 1.5rem;
+  padding: 1.8rem 2rem; cursor: pointer;
+  transition: background 0.2s; position: relative;
+  user-select: none;
+}
+.proy-accordion-header:hover { background: rgba(37,99,235,0.025); }
+
+.pah-num {
+  font-family: 'DM Mono', monospace; font-size: 3rem; font-weight: 400;
+  color: rgba(37,99,235,0.10); line-height: 1; min-width: 60px;
+  transition: color 0.2s;
+}
+.proy-accordion-item.open .pah-num { color: rgba(37,99,235,0.22); }
+
+.pah-info { flex: 1; }
+.pah-status { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+.pah-status-dot { width: 7px; height: 7px; border-radius: 50%; }
+.pah-status-dot.ok { background: #22c55e; }
+.pah-status-dot.wip { background: #f59e0b; }
+.pah-status-txt { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; }
+.pah-title { font-family: var(--font-serif); font-size: 1.35rem; font-weight: 400; color: var(--ink); margin-bottom: 0.3rem; }
+.pah-sub { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; color: var(--text-faint); text-transform: uppercase; }
+
+.pah-toggle {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--line); display: flex; align-items: center; justify-content: center;
+  color: var(--text-faint); transition: all 0.25s ease; flex-shrink: 0; margin-top: 0.2rem;
+}
+.pah-toggle svg { width: 14px; height: 14px; transition: transform 0.3s ease; }
+.proy-accordion-item.open .pah-toggle { background: var(--blue); border-color: var(--blue); color: white; }
+.proy-accordion-item.open .pah-toggle svg { transform: rotate(180deg); }
+
+/* Panel desplegable */
+.proy-accordion-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease;
+  padding: 0 2rem;
+}
+.proy-accordion-item.open .proy-accordion-body {
+  max-height: 1200px;
+  padding: 0 2rem 2rem;
+}
+
+.pab-intro {
+  border-top: 1px solid var(--line); padding-top: 1.5rem; margin-bottom: 1.5rem;
+}
+.pab-intro p { font-size: 0.95rem; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+.pab-imgs { display: grid; gap: 0.8rem; margin-bottom: 1.5rem; }
+.pab-imgs.cols-2 { grid-template-columns: 1fr 1fr; }
+.pab-imgs.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.pab-imgs.cols-1 { grid-template-columns: 1fr; max-width: 560px; }
+
+.pab-img-item img {
+  width: 100%; height: 200px; object-fit: contain;
+  background: var(--off-white, #f8f9fb);
+  border-radius: 8px; border: 1px solid var(--line);
+  display: block; transition: transform 0.2s ease;
+}
+.pab-img-item img:hover { transform: scale(1.02); }
+.pab-img-cap { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--text-faint); margin-top: 0.4rem; letter-spacing: 0.08em; }
+
+.pab-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+.pab-tag {
+  font-family: 'DM Mono', monospace; font-size: 0.6rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  border: 1px solid var(--line); color: var(--text-faint);
+  padding: 0.25rem 0.6rem; border-radius: 4px;
+}
+
+.pab-cta-row { display: flex; justify-content: flex-end; }
+.pab-ver-mas {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: 'DM Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--blue); text-decoration: none;
+  border: 1px solid var(--blue); padding: 0.55rem 1.2rem;
+  border-radius: 6px; transition: all 0.2s ease;
+}
+.pab-ver-mas:hover { background: var(--blue); color: white; }
+.pab-ver-mas svg { width: 12px; height: 12px; }
+
+@media (max-width: 640px) {
+  .pab-imgs.cols-3 { grid-template-columns: 1fr 1fr; }
+  .pab-imgs.cols-2 { grid-template-columns: 1fr; }
+  .pah-num { font-size: 2rem; min-width: 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- INTRO — solo la primera vez -->
+<div id="intro-screen">
+  <div id="intro-monogram">DC</div>
+  <div id="intro-name">Dominy Cadena · Portafolio EA3 · 2026</div>
+  <div id="intro-bar-track">
+    <div id="intro-bar-fill"></div>
+  </div>
+</div>
+
+<canvas id="ptc"></canvas>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#inicio" class="nav-logo">
+    Cadena
+    <span>Ingeniería Electrónica · USCO · 2026</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#inicio">Inicio</a></li>
+    <li><a href="#sobre-mi">Perfil</a></li>
+    <li><a href="#ingenieria">Ingeniería</a></li>
+    <li><a href="#proyectos">Proyectos</a></li>
+    <li><a href="#herramientas">Stack</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="inicio">
+  <div class="hero-left fade-in">
+    <div class="hero-tag">Portafolio Académico · Electrónica Analógica 3</div>
+    <h1 class="hero-name">
+      Dominy<br><em>Cadena</em>
+    </h1>
+    <p class="hero-subtitle">Ingeniería Electrónica &nbsp;·&nbsp; 5to Semestre &nbsp;·&nbsp; USCO</p>
+    <p class="hero-desc">
+      Diseño, simulación y validación experimental de circuitos analógicos. 
+      Cuatro proyectos <strong>finalizados</strong> que documentan un ciclo completo de ingeniería electrónica,
+      desde el análisis matemático hasta el prototipo físico.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Docente · Ing. Julián Adolfo Ramírez</div>
+      <div class="hero-meta-item">Equipo · Barrera, Cadena, Pérez, Olarte</div>
+      <div class="hero-meta-item">2026 · Semestre A · Neiva, Huila</div>
+    </div>
+    <div class="counter-widget">
+      <div class="counter-item">
+        <span class="counter-val" id="c1">0</span>
+        <span class="counter-lbl">Proyectos</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-val" id="c2">0</span>
+        <span class="counter-lbl">Semanas</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-val" id="c3">0%</span>
+        <span class="counter-lbl">Error máx. ganancia</span>
+      </div>
+    </div>
+    <a href="#proyectos" class="cta-btn">Ver Proyectos →</a>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-visual">
+      <div class="hero-circle-outer">
+        <div class="orbit-dot orbit-dot-1"></div>
+        <div class="orbit-dot orbit-dot-2"></div>
+        <div class="orbit-dot orbit-dot-3"></div>
+        <div class="orbit-dot orbit-dot-4"></div>
+        <div class="orbit-dot-sm orbit-dot-sm-1"></div>
+        <div class="orbit-dot-sm orbit-dot-sm-2"></div>
+      </div>
+      <div class="hero-circle-inner"></div>
+      <div class="hero-circle-core">
+        <span class="hero-circle-label">EA3</span>
+        <span class="hero-circle-sub">Electrónica Analógica III</span>
+      </div>
+      <div class="hero-float-tag hero-float-1">
+        <span class="ft-val">4</span>
+        <span class="ft-lbl">Proyectos completos</span>
+      </div>
+      <div class="hero-float-tag hero-float-2">
+        <span class="ft-val">Op-Amp</span>
+        <span class="ft-lbl">Circuitos analógicos</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE MÍ -->
+<section id="sobre-mi">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header fade-in">
+      <div class="section-number">01 — Perfil</div>
+      <h2 class="section-title">Ingeniero con<br>visión <em>práctica</em></h2>
+    </div>
+    <div class="sobre-grid">
+      <div class="sobre-text fade-in">
+
+        <!-- FOTO DE PERFIL -->
+        <div class="profile-photo-wrap">
+          <div class="profile-photo-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+            <span>
+              <img src="imagen_perfil/image.png" alt="Dominy Cadena" class="profile-photo">
+            </span>
+          </div>
+          <!-- Cuando tengas tu foto, reemplaza el div anterior por:
+          <img src="mi_foto.jpg" alt="Dominy Cadena" class="profile-photo">
+          -->
+        </div>
+
+        <p>
+          Soy Dominy Cadena, estudiante de Ingeniería Electrónica en 5to semestre en la Universidad Surcolombiana (USCO), Neiva. 
+          Combino el rigor matemático del diseño analógico con una orientación clara hacia la resolución de problemas reales del entorno — 
+          desde laboratorios universitarios hasta aplicaciones industriales en la región del Huila.
+        </p>
+        <p>
+          Durante Electrónica Analógica 3 desarrollé competencias sólidas en diseño con amplificadores operacionales, 
+          instrumentación electrónica, fabricación de PCB y metodologías ágiles aplicadas a la ingeniería.
+        </p>
+        <div class="lineas-titulo">Áreas de competencia</div>
+        <ul class="lineas-list">
+          <li>Instrumentación electrónica y acondicionamiento de señal analógica</li>
+          <li>Fabricación de PCB con EasyEDA y manufactura CNC</li>
+          <li>Simulación y validación experimental en NI Multisim</li>
+          <li>Metodología Lean Startup aplicada al diseño en ingeniería</li>
+          <li>Documentación técnica profesional en LaTeX / Overleaf</li>
+        </ul>
+      </div>
+
+      <div class="fade-in">
+        <div class="sobre-stats">
+          <div class="stat-card">
+            <div class="stat-number">4</div>
+            <div class="stat-label">Proyectos documentados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">12+</div>
+            <div class="stat-label">Semanas de trabajo continuo</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Informes entregados a tiempo</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">5to</div>
+            <div class="stat-label">Semestre en curso</div>
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem;">
+          <div class="aporte-header">Rol en el equipo</div>
+          <div class="aporte-item">
+            <div class="aporte-icon">
+              <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </div>
+            <div class="aporte-text">
+              <div class="aporte-name">Gestión de errores y evolución</div>
+              <div class="aporte-desc">Documentación sistemática en tiempo real de fallas, ajustes y resultados en cada iteración de diseño.</div>
+            </div>
+          </div>
+          <div class="aporte-item">
+            <div class="aporte-icon">
+              <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            </div>
+            <div class="aporte-text">
+              <div class="aporte-name">Liderazgo técnico en simulación</div>
+              <div class="aporte-desc">Apoyo activo en laboratorio y gestión del avance colectivo del equipo en cada entrega.</div>
+            </div>
+          </div>
+          <div class="aporte-item">
+            <div class="aporte-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+            <div class="aporte-text">
+              <div class="aporte-name">Procedimientos reflexivos</div>
+              <div class="aporte-desc">Informes con análisis crítico del desempeño de los diseños, más allá del resultado numérico.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INGENIERÍA -->
+<section id="ingenieria">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header fade-in">
+      <div class="section-number">02 — Por qué elegiría a este ingeniero</div>
+      <h2 class="section-title">Lo que me define<br>como <em>profesional</em></h2>
+    </div>
+    <p class="proyectos-intro fade-in">
+      Más allá de los conocimientos técnicos, mi valor como ingeniero está en cómo pienso los problemas,
+      cómo aprendo del error y cómo traduzco la teoría en resultados concretos y medibles.
+    </p>
+    <div class="ing-grid">
+      <div class="ing-card fade-in">
+        <div class="ing-card-num">01</div>
+        <div class="ing-card-title">Ciclo completo de diseño</div>
+        <div class="ing-card-desc">No me detengo en la simulación. Cada proyecto lo llevo del análisis matemático al prototipo físico, validando con osciloscopio y midiendo el error real frente al teórico.</div>
+      </div>
+      <div class="ing-card fade-in">
+        <div class="ing-card-num">02</div>
+        <div class="ing-card-title">Documentación de calidad</div>
+        <div class="ing-card-desc">Redacto informes técnicos en LaTeX con análisis crítico de resultados. La documentación no es un trámite — es parte del diseño.</div>
+      </div>
+      <div class="ing-card fade-in">
+        <div class="ing-card-num">03</div>
+        <div class="ing-card-title">Ingeniería orientada al impacto</div>
+        <div class="ing-card-desc">Desarrollé un MVP para registrar curvas de tueste de café en la región del Huila. Conecto la electrónica con necesidades reales de la comunidad.</div>
+      </div>
+      <div class="ing-card fade-in">
+        <div class="ing-card-num">04</div>
+        <div class="ing-card-title">Aprendizaje del error</div>
+        <div class="ing-card-desc">Documento sistemáticamente las fallas: el offset parásito de las juntas de protoboard, la diferencia de 0.40% en ganancia. El error es fuente de conocimiento.</div>
+      </div>
+      <div class="ing-card fade-in">
+        <div class="ing-card-num">05</div>
+        <div class="ing-card-title">Metodología ágil en ingeniería</div>
+        <div class="ing-card-desc">Apliqué Lean Startup al diseño electrónico: MVP, hipótesis, validación real con usuario. Pienso en iteraciones, no en cascada.</div>
+      </div>
+      <div class="ing-card fade-in">
+        <div class="ing-card-num">06</div>
+        <div class="ing-card-title">Trabajo en equipo técnico</div>
+        <div class="ing-card-desc">Cuatro integrantes, cuatro proyectos, cero atrasos. Coordinación efectiva y liderazgo compartido en simulación, laboratorio y documentación.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROYECTOS -->
+<section id="proyectos">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header fade-in">
+      <div class="section-number">03 — Proyectos</div>
+      <h2 class="section-title">Portafolio de<br><em>proyectos</em></h2>
+    </div>
+    <p class="proyectos-intro fade-in">
+      Cuatro proyectos que documentan el ciclo completo del diseño electrónico analógico — 
+      desde la formulación matemática hasta la validación experimental sobre protoboard.
+    </p>
+
+    <div class="proyectos-accordion fade-in">
+
+      <!-- ── PROYECTO 1 ── -->
+      <div class="proy-accordion-item" id="acc1">
+        <div class="proy-accordion-header" onclick="toggleAccordion('acc1')">
+          <div class="pah-num">01</div>
+          <div class="pah-info">
+            <div class="pah-status">
+              <span class="pah-status-dot ok"></span>
+              <span class="pah-status-txt" style="color:#22c55e;">Finalizado</span>
+            </div>
+            <div class="pah-title">Aplicaciones del Amplificador Operacional</div>
+            <div class="pah-sub">EA3 · 2026 · Cinco circuitos</div>
+          </div>
+          <div class="pah-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+        </div>
+        <div class="proy-accordion-body">
+          <div class="pab-intro">
+            <p>Este proyecto fue mi primer contacto real con el ciclo completo de ingeniería analógica: diseñar desde la matemática, simular en Multisim y validar con osciloscopio. Construir cinco circuitos distintos — filtros, osciladores, comparadores e instrumentación — me enseñó que la diferencia entre la teoría y el hardware real no es un fracaso, sino el punto de partida del aprendizaje.</p>
+          </div>
+          <div class="pab-imgs cols-2">
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto1/img_butter_bode.jpg" alt="Bode Butterworth">
+              <div class="pab-img-cap">Diagrama de Bode — Filtro Butterworth</div>
+            </div>
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto1/img_schmitt_osciloscopio.jpg" alt="Schmitt Trigger osciloscopio">
+              <div class="pab-img-cap">Schmitt Trigger — Histéresis medida</div>
+            </div>
+          </div>
+          <div class="pab-imgs cols-2">
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto1/img_wien_scope.jpg" alt="Oscilador Wien">
+              <div class="pab-img-cap">Oscilador Wien — Señal en osciloscopio</div>
+            </div>
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto1/img_inst_vout.jpg" alt="Amp Instrumentación Vout">
+              <div class="pab-img-cap">Amp. Instrumentación — Salida validada</div>
+            </div>
+          </div>
+          <div class="pab-tags">
+            <span class="pab-tag">Filtro Butterworth</span>
+            <span class="pab-tag">Conv. F/V</span>
+            <span class="pab-tag">Oscilador Wien</span>
+            <span class="pab-tag">Schmitt Trigger</span>
+            <span class="pab-tag">Amp. Instrumentación</span>
+          </div>
+          <div class="pab-cta-row">
+            <a href="proyecto1.html" class="pab-ver-mas">
+              Ver proyecto completo
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROYECTO 2 ── -->
+      <div class="proy-accordion-item" id="acc2">
+        <div class="proy-accordion-header" onclick="toggleAccordion('acc2')">
+          <div class="pah-num">02</div>
+          <div class="pah-info">
+            <div class="pah-status">
+              <span class="pah-status-dot ok"></span>
+              <span class="pah-status-txt" style="color:#22c55e;">Finalizado</span>
+            </div>
+            <div class="pah-title">Instrumentación Analógica — Lean Startup</div>
+            <div class="pah-sub">EA3 · Proyecto Integrador · Termocupla K</div>
+          </div>
+          <div class="pah-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+        </div>
+        <div class="proy-accordion-body">
+          <div class="pab-intro">
+            <p>Este proyecto me formó como ingeniero que diseña para usuarios reales. Visitamos laboratorios, encontramos una necesidad concreta en CESURCAFÉ y construimos un acondicionador de señal analógico para registrar curvas de tueste de café. Aprendí que la ganancia de 0.40% de error no es el único resultado importante — el offset parásito del 53.9% me enseñó más sobre ingeniería de medición que cualquier simulación.</p>
+          </div>
+          <div class="pab-imgs cols-2">
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto2/img_esquematico_MVP.jpeg" alt="Esquemático MVP">
+              <div class="pab-img-cap">Esquemático del MVP — Cuatro etapas</div>
+            </div>
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto2/img_tostadora_cafe.jpeg" alt="Tostadora de café CESURCAFÉ">
+              <div class="pab-img-cap">Tostadora analógica — CESURCAFÉ, USCO</div>
+            </div>
+          </div>
+          <div class="pab-imgs cols-1">
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto2/img_curva_tueste.jpeg" alt="Curva de tueste de café" >
+              <div class="pab-img-cap">Curva de tueste registrada — Objetivo del MVP</div>
+            </div>
+          </div>
+          <div class="pab-tags">
+            <span class="pab-tag">Lean Startup</span>
+            <span class="pab-tag">AD620AN</span>
+            <span class="pab-tag">Termocupla K</span>
+            <span class="pab-tag">MVP Analógico</span>
+          </div>
+          <div class="pab-cta-row">
+            <a href="proyecto2.html" class="pab-ver-mas">
+              Ver proyecto completo
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROYECTO 3 ── -->
+      <div class="proy-accordion-item" id="acc3">
+        <div class="proy-accordion-header" onclick="toggleAccordion('acc3')">
+          <div class="pah-num">03</div>
+          <div class="pah-info">
+            <div class="pah-status">
+              <span class="pah-status-dot ok"></span>
+              <span class="pah-status-txt" style="color:#22c55e;">Finalizado</span>
+            </div>
+            <div class="pah-title">Diseño de PCB — Tutorial EasyEDA</div>
+            <div class="pah-sub">EA3 · DRC / DFM · Presupuesto &lt;20 USD</div>
+          </div>
+          <div class="pah-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+        </div>
+        <div class="proy-accordion-body">
+          <div class="pab-intro">
+            <p>El salto del protoboard a una PCB profesional requiere mucho más que trazar pistas. Este proyecto documentó el flujo completo: esquemático, netlist, layout, DRC y generación de Gerbers para fabricación en JLCPCB. Desarrollé competencias en DFM que son directamente aplicables al trabajo industrial — entendí que diseñar correctamente para fabricación es tan importante como el diseño eléctrico mismo.</p>
+          </div>
+          <div class="pab-imgs cols-2">
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto3/img_simulacion_pcb.jpeg" alt="Diseño y simulación PCB">
+              <div class="pab-img-cap">Diseño y simulación en EasyEDA</div>
+            </div>
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto3/img_modelo_3D_pcb.jpeg" alt="Modelo 3D PCB">
+              <div class="pab-img-cap">Modelo 3D — Vista previa de fabricación</div>
+            </div>
+          </div>
+          <div class="pab-imgs cols-1">
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto3/img_modelo_2D_pcb.jpeg" alt="Layout 2D PCB" >
+              <div class="pab-img-cap">Layout 2D — Pistas y plano de cobre</div>
+            </div>
+          </div>
+          <div class="pab-tags">
+            <span class="pab-tag">EasyEDA</span>
+            <span class="pab-tag">JLCPCB</span>
+            <span class="pab-tag">Gerber</span>
+            <span class="pab-tag">DRC / DFM</span>
+          </div>
+          <div class="pab-cta-row">
+            <a href="proyecto3.html" class="pab-ver-mas">
+              Ver proyecto completo
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROYECTO 4 ── -->
+      <div class="proy-accordion-item" id="acc4">
+        <div class="proy-accordion-header" onclick="toggleAccordion('acc4')">
+          <div class="pah-num">04</div>
+          <div class="pah-info">
+            <div class="pah-status">
+              <span class="pah-status-dot ok"></span>
+              <span class="pah-status-txt" style="color:#22c55e;">Finalizado</span>
+            </div>
+            <div class="pah-title">Sintetizador Analógico de Señal ECG</div>
+            <div class="pah-sub">EA3 · Proyecto Final · Ondas P, Q, R, S, T</div>
+          </div>
+          <div class="pah-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+        </div>
+        <div class="proy-accordion-body">
+          <div class="pab-intro">
+            <p>El proyecto más desafiante del semestre: reproducir analógicamente la señal eléctrica del corazón humano con sus cinco subondas y tres anomalías clínicas. La arquitectura modular en cuatro bloques me enseñó a pensar en sistemas complejos, descomponerlos en módulos independientes y validar cada uno antes de la integración. Una herramienta real con aplicación directa en calibración de equipos hospitalarios.</p>
+          </div>
+          <div class="pab-imgs cols-1">
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto4/img_diagramaECG.jpeg" alt="Diagrama señal ECG">
+              <div class="pab-img-cap">Diagrama de la señal ECG — Ondas P, Q, R, S, T y sus parámetros clínicos</div>
+            </div>
+          </div>
+          <div class="pab-imgs cols-3">
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto4/fibrilacion_Auricular.jpeg" alt="Fibrilación auricular">
+              <div class="pab-img-cap">Fibrilación auricular — Onda P ausente, ritmo irregular</div>
+            </div>
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto4/hipertrofia_ventricular.jpeg" alt="Hipertrofia ventricular">
+              <div class="pab-img-cap">Hipertrofia ventricular — QRS de alta amplitud</div>
+            </div>
+            <div class="pab-img-item">
+              <img src="imagenes_proyecto4/inversion_onda_T.jpeg" alt="Inversión onda T">
+              <div class="pab-img-cap">Inversión onda T — Repolarización anormal</div>
+            </div>
+          </div>
+          <div class="pab-tags">
+            <span class="pab-tag">ECG Analógico</span>
+            <span class="pab-tag">Patologías Cardíacas</span>
+            <span class="pab-tag">Síntesis por Pulsos</span>
+            <span class="pab-tag">Op-Amp</span>
+          </div>
+          <div class="pab-cta-row">
+            <a href="proyecto4.html" class="pab-ver-mas">
+              Ver proyecto completo
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /accordion -->
+  </div>
+</section>
+
+<!-- HERRAMIENTAS -->
+<section id="herramientas">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header fade-in">
+      <div class="section-number">04 — Stack técnico</div>
+      <h2 class="section-title">Herramientas y<br><em>componentes</em></h2>
+    </div>
+    <div class="tools-grid fade-in">
+      <div class="tool-card"><span class="tool-icon">🔬</span><div class="tool-name">NI Multisim</div><div class="tool-role">Simulación SPICE</div></div>
+      <div class="tool-card"><span class="tool-icon">💻</span><div class="tool-name">EasyEDA</div><div class="tool-role">Diseño PCB</div></div>
+      <div class="tool-card"><span class="tool-icon">📡</span><div class="tool-name">Osciloscopio Rigol</div><div class="tool-role">Medición y análisis</div></div>
+      <div class="tool-card"><span class="tool-icon">⚡</span><div class="tool-name">Gen. de Funciones</div><div class="tool-role">Fuente de señales</div></div>
+      <div class="tool-card"><span class="tool-icon">📄</span><div class="tool-name">Overleaf / LaTeX</div><div class="tool-role">Documentación técnica</div></div>
+      <div class="tool-card"><span class="tool-icon">🔧</span><div class="tool-name">Fresadora CNC</div><div class="tool-role">Fabricación PCB</div></div>
+      <div class="tool-card"><span class="tool-icon">🔩</span><div class="tool-name">LM741 / TL084</div><div class="tool-role">Op-Amp propósito gral.</div></div>
+      <div class="tool-card"><span class="tool-icon">🔌</span><div class="tool-name">AD620AN</div><div class="tool-role">Amp. de Instrumentación</div></div>
+      <div class="tool-card"><span class="tool-icon">🏭</span><div class="tool-name">JLCPCB</div><div class="tool-role">Fabricante PCB industrial</div></div>
+      <div class="tool-card"><span class="tool-icon">🌡️</span><div class="tool-name">Termocupla Tipo K</div><div class="tool-role">Sensor de temperatura</div></div>
+      <div class="tool-card"><span class="tool-icon">📐</span><div class="tool-name">CircuiTikZ / LaTeX</div><div class="tool-role">Esquemáticos vectoriales</div></div>
+      <div class="tool-card"><span class="tool-icon">🗂️</span><div class="tool-name">Gerber / BOM</div><div class="tool-role">Archivos de fabricación</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header fade-in">
+      <div class="section-number">05 — Contacto</div>
+      <h2 class="section-title">Hablemos de<br><em>electrónica</em></h2>
+    </div>
+    <div class="contacto-grid">
+      <div class="contacto-info fade-in">
+        <p>¿Preguntas sobre alguno de los proyectos? ¿Quieres conocer más sobre el proceso de diseño o la metodología utilizada? Escríbeme.</p>
+        <div class="contacto-detail">u20241221638@usco.edu.co</div>
+        <div class="contacto-detail">Ingeniería Electrónica · USCO · 5to Semestre</div>
+        <div class="contacto-detail">Electrónica Analógica 3 · Ing. Julián Adolfo Ramírez</div>
+        <div class="contacto-detail">Equipo · Barrera, Cadena, Pérez, Olarte</div>
+        <div class="contacto-detail">2026 · Semestre A · Neiva, Huila</div>
+      </div>
+      <div class="fade-in">
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input type="text" id="contact-name" class="form-control" placeholder="Tu nombre">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="contact-email" class="form-control" placeholder="tu@correo.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mensaje</label>
+          <textarea id="contact-message" class="form-control" rows="4" placeholder="Escribe tu mensaje..."></textarea>
+        </div>
+        <button class="form-btn" id="contact-btn" onclick="enviarMensaje()">Enviar Mensaje →</button>
+        <div id="contact-status" style="margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;display:none;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>Dominy Cadena · 20241221638 · Ingeniería Electrónica · EA3 · 2026</div>
+  <div>USCO · Neiva, Huila</div>
+</footer>
+
+<script>
+/* ── PARTICLES ── */
+const canvas = document.getElementById('ptc');
+const ctx = canvas.getContext('2d');
+let W, H, pts = [];
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+for (let i = 0; i < 40; i++) {
+  pts.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+    r: Math.random()*1.5+0.5, vx:(Math.random()-.5)*.18, vy:(Math.random()-.5)*.18,
+    a: Math.random()*.25+0.08 });
+}
+(function draw() {
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p => {
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(37,99,235,${p.a})`; ctx.fill();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+  });
+  requestAnimationFrame(draw);
+})();
+
+/* ── COUNTERS ── */
+function animCount(el, target, suffix, dur) {
+  let s=0, step=target/(dur/16);
+  const t=setInterval(()=>{ s+=step; if(s>=target){s=target;clearInterval(t);} el.textContent=Math.round(s)+suffix; },16);
+}
+setTimeout(() => {
+  animCount(document.getElementById('c1'),4,'',900);
+  animCount(document.getElementById('c2'),12,'',800);
+  animCount(document.getElementById('c3'),15,'%',1100);
+}, 800);
+
+/* ── FADE OBSERVER ── */
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{ if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'),i*70); });
+},{threshold:0.08});
+document.querySelectorAll('.fade-in,.fade-up').forEach(el=>obs.observe(el));
+
+/* ── NAV SCROLL ── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll',()=>{
+  navbar.classList.toggle('scrolled',scrollY>40);
+  const secs=document.querySelectorAll('section[id]'); let cur='';
+  secs.forEach(s=>{ if(scrollY>=s.offsetTop-120) cur=s.id; });
+  document.querySelectorAll('.nav-links a').forEach(a=>{ a.classList.toggle('active',a.getAttribute('href')==='#'+cur); });
+});
+
+/* ── ACCORDION ── */
+function toggleAccordion(id) {
+  const item = document.getElementById(id);
+  const isOpen = item.classList.contains('open');
+  // cierra todos
+  document.querySelectorAll('.proy-accordion-item').forEach(el=>el.classList.remove('open'));
+  // abre el seleccionado si no estaba abierto
+  if (!isOpen) item.classList.add('open');
+}
+
+/* ── INTRO — solo la primera visita (sessionStorage) ── */
+(function() {
+  const screen = document.getElementById('intro-screen');
+  if (!screen) return;
+
+  // Si ya se mostró en esta sesión, ocultarlo de inmediato
+  if (sessionStorage.getItem('intro_shown')) {
+    screen.style.display = 'none';
+    return;
+  }
+
+  document.body.style.overflow = 'hidden';
+  let pct = 0, done = false;
+  const fill = document.getElementById('intro-bar-fill');
+
+  function step() {
+    if (done) return;
+    const inc = pct < 40 ? 0.6 : pct < 80 ? 1.0 : 0.5;
+    pct += inc;
+    if (pct >= 100) { pct = 100; done = true; }
+    fill.style.width = pct + '%';
+    if (!done) setTimeout(()=>requestAnimationFrame(step), 18);
+    else setTimeout(exit, 300);
+  }
+
+  function exit() {
+    screen.classList.add('exit');
+    sessionStorage.setItem('intro_shown', '1');
+    setTimeout(()=>{ document.body.style.overflow=''; if(screen.parentNode) screen.parentNode.removeChild(screen); }, 550);
+  }
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(()=>setTimeout(()=>requestAnimationFrame(step), 80));
+  } else {
+    setTimeout(()=>requestAnimationFrame(step), 280);
+  }
+  setTimeout(()=>{ if(!done){done=true;exit();} }, 5000);
+})();
+
+/* ── CONTACTO Formspree ── */
+function enviarMensaje() {
+  var nombre  = document.getElementById('contact-name').value.trim();
+  var email   = document.getElementById('contact-email').value.trim();
+  var mensaje = document.getElementById('contact-message').value.trim();
+  var status  = document.getElementById('contact-status');
+  var btn     = document.getElementById('contact-btn');
+
+  if (!nombre || !email || !mensaje) {
+    status.textContent = '\u26a0 Por favor completa todos los campos.';
+    status.style.color = '#f59e0b';
+    status.style.display = 'block';
+    return;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    status.textContent = '\u26a0 Ingresa un correo v\u00e1lido.';
+    status.style.color = '#f59e0b';
+    status.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+  status.style.display = 'none';
+
+  fetch('https://formspree.io/f/xzdwnnzb', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ name: nombre, email: email, message: mensaje })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      status.textContent = '\u2713 Mensaje enviado correctamente. \u00a1Gracias!';
+      status.style.color = '#22c55e';
+      status.style.display = 'block';
+      btn.textContent = 'Enviado \u2713';
+      document.getElementById('contact-name').value = '';
+      document.getElementById('contact-email').value = '';
+      document.getElementById('contact-message').value = '';
+    } else {
+      throw new Error('error');
+    }
+  })
+  .catch(function() {
+    status.textContent = '\u2717 Error al enviar. Esch\u00edbeme a u20241221638@usco.edu.co';
+    status.style.color = '#ef4444';
+    status.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Enviar Mensaje \u2192';
+  });
+}
+</script>
+</body>
+</html>

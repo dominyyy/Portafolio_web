@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P3 · Diseño de PCB EasyEDA · Dominy Cadena</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="proyecto-page">
+
+<canvas id="ptc"></canvas>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    Cadena
+    <span>Ingeniería Electrónica · USCO · 2026</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:2rem;">
+    <a href="#por-que" class="nav-link">Por qué</a>
+    <a href="#flujo" class="nav-link">Flujo</a>
+    <a href="#criterios" class="nav-link">Criterios</a>
+    <a href="index.html#proyectos" class="nav-back">← Portafolio</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="proy-hero">
+  <div>
+    <div class="breadcrumb"><a href="index.html">Portafolio</a> / Proyecto 03</div>
+    <div class="project-num">Proyecto 03 / 04</div>
+    <h1 class="hero-title">
+      Diseño de PCB —<br>Tutorial<br><em>EasyEDA</em>
+    </h1>
+    <p class="proy-hero-desc">
+      Del esquemático al Gerber listo para fabricar. Un tutorial técnico del flujo completo 
+      de diseño profesional de PCB con EasyEDA, criterios DRC y análisis de costo real.
+    </p>
+    <div class="status-row">
+      <span class="badge badge-ok">● Finalizado</span>
+      <span class="badge badge-info">EA3 · 2026</span>
+      <span class="badge badge-info">Presupuesto &lt;20 USD</span>
+    </div>
+    <div class="proy-hero-meta" style="margin-top:2rem;">
+      <div class="meta-cell">
+        <div class="meta-label">Herramienta principal</div>
+        <div class="meta-val">EasyEDA Pro</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Fabricante</div>
+        <div class="meta-val">JLCPCB</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Estándar</div>
+        <div class="meta-val">DRC / DFM</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proy-hero-right">
+    <div class="phr-title">Etapas del flujo PCB</div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;">
+      <div class="result-chip info">1 · Esquemático</div>
+      <div class="result-chip info">2 · Netlist y footprints</div>
+      <div class="result-chip info">3 · Layout y ruteo</div>
+      <div class="result-chip info">4 · DRC · Design Rule Check</div>
+      <div class="result-chip info">5 · Generación Gerber</div>
+      <div class="result-chip info">6 · Pedido JLCPCB</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="content-wrap">
+
+  <!-- 01 POR QUÉ -->
+  <section class="sec fade-up" id="por-que">
+    <div class="sec-label">Por qué este proyecto</div>
+    <h2 class="sec-title">Del protoboard a la <em>placa real</em></h2>
+    <p class="sec-text">
+      Los proyectos anteriores se implementaron en protoboard — rápido, flexible, ideal para validar. 
+      Pero el protoboard tiene límites: resistencia de contacto, inductancias parásitas, disposición 
+      del cableado no controlada. Para llevar un diseño a producción, hay que hacer una PCB.
+    </p>
+    <p class="sec-text">
+      Diseñar una PCB correctamente no es simplemente trazar pistas. 
+      Requiere conocer reglas de diseño, entender los límites de fabricación del fabricante 
+      y generar los archivos correctos en el formato correcto. 
+      Este proyecto documentó ese proceso de principio a fin.
+    </p>
+
+    <div class="highlight-box">
+      <p>
+        <strong>El objetivo no era fabricar cualquier PCB</strong> — era aprender a diseñar una 
+        que cumpla los criterios de Design Rule Check (DRC) y Design for Manufacturability (DFM), 
+        con un presupuesto de fabricación menor a 20 USD.
+      </p>
+    </div>
+
+    <!-- Imagen del diseño/simulación -->
+    <div class="img-wrap" style="margin-top:2.5rem;">
+      <img src="imagenes_proyecto3/img_simulacion_pcb.jpeg" alt="Diseño y simulación del circuito en EasyEDA">
+      <div class="img-caption">Fig. 1.1 — Diseño y simulación del circuito en EasyEDA antes del layout</div>
+    </div>
+  </section>
+
+  <!-- 02 FLUJO -->
+  <section class="sec fade-up" id="flujo">
+    <div class="sec-label">El proceso paso a paso</div>
+    <h2 class="sec-title">Flujo completo de diseño <em>profesional</em></h2>
+
+    <div class="story-steps">
+      <div class="story-step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">Esquemático en EasyEDA</div>
+          <div class="step-desc">Captura del circuito con símbolos de la librería estándar y componentes personalizados. Cada componente vinculado a su footprint de fabricación correspondiente.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">Transferencia a layout — Netlist</div>
+          <div class="step-desc">La netlist conecta el esquemático con el editor de layout. Los footprints se posicionan en el área de diseño siguiendo criterios de señal y disipación.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">Ruteo de pistas y planos de cobre</div>
+          <div class="step-desc">Trazado de pistas con anchos apropiados para la corriente. Plano de tierra en capa inferior para blindaje electromagnético y retorno limpio de corriente.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <div class="step-title">Design Rule Check (DRC)</div>
+          <div class="step-desc">Verificación automática de violaciones: separación mínima entre pistas, tamaño mínimo de vía, annular ring, soldermask expansion. Cero errores antes de continuar.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <div class="step-title">Generación de archivos Gerber y BOM</div>
+          <div class="step-desc">Exportación de los archivos Gerber por capa (F.Cu, B.Cu, F.Mask, B.Mask, F.SilkS, Edge.Cuts), el archivo de taladros (Excellon) y la lista de materiales (BOM) para ensamble.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">06</div>
+        <div class="step-content">
+          <div class="step-title">Pedido y análisis de costo en JLCPCB</div>
+          <div class="step-desc">Carga de archivos en JLCPCB, verificación del visor Gerber, selección de parámetros (FR4, 1.6mm, HASL, 2 capas) y análisis de costo para lote de 5 unidades.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Imagen del layout 2D -->
+    <div class="img-wrap" style="margin-top:2.5rem;">
+      <img src="imagenes_proyecto3/img_modelo_2D_pcb.jpeg" alt="Layout 2D de la PCB — pistas y plano de cobre">
+      <div class="img-caption">Fig. 2.1 — Layout 2D completo: pistas ruteadas, plano de cobre en capa inferior y serigrafía</div>
+    </div>
+  </section>
+
+  <!-- 03 CRITERIOS -->
+  <section class="sec fade-up" id="criterios">
+    <div class="sec-label">Los criterios que importan</div>
+    <h2 class="sec-title">DFM — Diseñar para <em>que funcione en fábrica</em></h2>
+    <p class="sec-text">
+      El DRC verifica las reglas del diseño. El DFM va más allá: verifica que el diseño 
+      sea fabricable de forma eficiente y económica. Son reglas que los fabricantes 
+      de PCB como JLCPCB establecen para garantizar rendimiento de producción.
+    </p>
+
+    <!-- Imagen del modelo 3D -->
+    <div class="img-wrap">
+      <img src="imagenes_proyecto3/img_modelo_3D_pcb.jpeg" alt="Modelo 3D de la PCB — vista previa de fabricación">
+      <div class="img-caption">Fig. 3.1 — Vista 3D de la PCB: verificación visual antes de enviar a fabricar</div>
+    </div>
+
+    <div class="metric-row">
+      <div class="metric-cell">
+        <span class="metric-val">0.2mm</span>
+        <span class="metric-label">Separación mínima pistas</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-val">0.3mm</span>
+        <span class="metric-label">Diámetro mínimo taladro</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-val">2</span>
+        <span class="metric-label">Capas de cobre</span>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <p>
+        <strong>Costo real logrado:</strong> el diseño dentro de los parámetros DFM de JLCPCB 
+        permite fabricar 5 unidades de la PCB por menos de 20 USD incluido el envío, 
+        con tiempo de entrega de 7 a 10 días hábiles desde China.
+      </p>
+    </div>
+
+    <div class="story-steps" style="margin-top:2rem;">
+      <div class="story-step">
+        <div class="step-num">✓</div>
+        <div class="step-content">
+          <div class="step-title">Proceso documentado y reproducible</div>
+          <div class="step-desc">Cualquier miembro del equipo puede seguir el tutorial y llegar al mismo resultado. La documentación es parte del entregable.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">✓</div>
+        <div class="step-content">
+          <div class="step-title">Flujo profesional — el mismo usado en la industria</div>
+          <div class="step-desc">EasyEDA + JLCPCB es el flujo usado por equipos de hardware independiente a nivel mundial. Este proyecto establece la base para proyectos futuros.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">→</div>
+        <div class="step-content">
+          <div class="step-title">Siguiente paso: fabricación física</div>
+          <div class="step-desc">Los archivos están listos. La fabricación de la PCB es el siguiente hito — pendiente de autorización presupuestal del proyecto.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div>Dominy Cadena · Proyecto 03 · EA3 · USCO · 2026</div>
+  <div><a href="proyecto4.html" style="color:rgba(255,255,255,0.3);text-decoration:none;">Proyecto 04 →</a></div>
+</footer>
+
+<script>
+const canvas = document.getElementById('ptc');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const pts = Array.from({length:30},()=>({
+  x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+  r:Math.random()*1.2+0.4, vx:(Math.random()-.5)*.15, vy:(Math.random()-.5)*.15,
+  a:Math.random()*.2+0.06
+}));
+(function draw(){
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(37,99,235,${p.a})`; ctx.fill();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+  });
+  requestAnimationFrame(draw);
+})();
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{ if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'),i*80); });
+},{threshold:0.06});
+document.querySelectorAll('.fade-up,.fade-in').forEach(el=>obs.observe(el));
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',scrollY>40));
+</script>
+</body>
+</html>

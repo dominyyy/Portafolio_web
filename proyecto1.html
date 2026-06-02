@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P1 · Aplicaciones del Amplificador Operacional · Dominy Cadena</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}};</script>
+</head>
+<body class="proyecto-page">
+
+<canvas id="ptc"></canvas>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    Cadena
+    <span>Ingeniería Electrónica · USCO · 2026</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:2rem;">
+    <a href="#historia" class="nav-link">Historia</a>
+    <a href="#circuitos" class="nav-link">Circuitos</a>
+    <a href="#resultados" class="nav-link">Resultados</a>
+    <a href="index.html#proyectos" class="nav-back">← Portafolio</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="proy-hero">
+  <div>
+    <div class="breadcrumb"><a href="index.html">Portafolio</a> / Proyecto 01</div>
+    <div class="project-num">Proyecto 01 / 04</div>
+    <h1 class="hero-title">
+      Aplicaciones del<br>Amplificador<br><em>Operacional</em>
+    </h1>
+    <p class="proy-hero-desc">
+      Cinco circuitos analógicos diseñados matemáticamente, simulados y validados experimentalmente. 
+      El primer proyecto del ciclo EA3 — donde la teoría se convierte en algo que se puede medir.
+    </p>
+    <div class="status-row">
+      <span class="badge badge-ok">● Completado</span>
+      <span class="badge badge-info">EA3 · 2026</span>
+      <span class="badge badge-info">5 circuitos</span>
+    </div>
+
+    <div class="proy-hero-meta" style="margin-top:2rem;">
+      <div class="meta-cell">
+        <div class="meta-label">Componente principal</div>
+        <div class="meta-val">LM741 / TL084</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Herramienta</div>
+        <div class="meta-val">NI Multisim</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Error máx. ganancia</div>
+        <div class="meta-val">&lt; 15%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proy-hero-right">
+    <div class="phr-title">Circuitos desarrollados</div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;">
+      <div class="result-chip info">Filtro Butterworth pasa-bajas</div>
+      <div class="result-chip info">Convertidor Frecuencia/Voltaje</div>
+      <div class="result-chip info">Oscilador Wien</div>
+      <div class="result-chip info">Schmitt Trigger</div>
+      <div class="result-chip info">Amp. de Instrumentación</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="content-wrap">
+
+  <!-- 01 LA HISTORIA -->
+  <section class="sec fade-up" id="historia">
+    <div class="sec-label">El punto de partida</div>
+    <h2 class="sec-title">¿Qué queríamos <em>aprender</em>?</h2>
+    <p class="sec-text">
+      El Op-Amp es el bloque fundamental de la electrónica analógica moderna. Pero entender su funcionamiento 
+      desde una ecuación no es lo mismo que diseñar con él, simularlo y medir su respuesta real. 
+      Este proyecto nació con una pregunta concreta: <strong>¿cuánto se aleja el circuito real del simulado?</strong>
+    </p>
+    <p class="sec-text">
+      La respuesta requería diseñar cinco aplicaciones distintas, cada una con un objetivo diferente — 
+      desde procesar señales de frecuencia hasta aislar un sensor del resto del sistema.
+    </p>
+
+    <div class="highlight-box">
+      <p>
+        <strong>Enfoque del proyecto:</strong> ciclo completo de ingeniería — análisis matemático → simulación SPICE → 
+        implementación en protoboard → medición y comparación de resultados. La validación experimental 
+        es la que cierra el aprendizaje.
+      </p>
+    </div>
+  </section>
+
+  <!-- 02 LOS CIRCUITOS -->
+  <section class="sec fade-up" id="circuitos">
+    <div class="sec-label">Lo que se construyó</div>
+    <h2 class="sec-title">Cinco <em>circuitos</em>, cinco historias</h2>
+
+    <!-- Filtro Butterworth -->
+    <div style="margin-bottom:3.5rem;">
+      <div class="sec-label" style="margin-bottom:0.8rem;">Circuito 1 — Filtro Butterworth Sallen-Key</div>
+      <h3 style="font-family:var(--font-serif);font-size:1.5rem;font-weight:400;color:var(--ink);margin-bottom:1rem;">
+        Aislar frecuencias con <em>precisión matemática</em>
+      </h3>
+      <p class="sec-text">
+        El filtro pasa-bajas de segundo orden Butterworth fue diseñado con topología Sallen-Key para lograr 
+        respuesta maximalmente plana en la banda de paso. La frecuencia de corte se calculó analíticamente 
+        y luego fue verificada con el diagrama de Bode simulado.
+      </p>
+
+      <div class="img-grid-2">
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_butter_esquematico.png" alt="Esquemático filtro Butterworth Sallen-Key">
+          <div class="img-caption">Fig. 1.1 — Esquemático Sallen-Key</div>
+        </div>
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_butter_bode.jpg" alt="Diagrama de Bode simulado vs medido">
+          <div class="img-caption">Fig. 1.2 — Bode: simulado vs. medido</div>
+        </div>
+      </div>
+
+      <div class="metric-row">
+        <div class="metric-cell">
+          <span class="metric-val">2do</span>
+          <span class="metric-label">Orden del filtro</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-val">Sallen-Key</span>
+          <span class="metric-label">Topología</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-val">Butterworth</span>
+          <span class="metric-label">Aproximación</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Convertidor F/V -->
+    <div style="margin-bottom:3.5rem;">
+      <div class="sec-label" style="margin-bottom:0.8rem;">Circuito 2 — Convertidor Frecuencia/Voltaje</div>
+      <h3 style="font-family:var(--font-serif);font-size:1.5rem;font-weight:400;color:var(--ink);margin-bottom:1rem;">
+        Traducir frecuencia a una <em>tensión medible</em>
+      </h3>
+      <p class="sec-text">
+        El convertidor F/V toma una señal de frecuencia variable como entrada y entrega un voltaje DC proporcional 
+        a esa frecuencia. Se validó a tres frecuencias de prueba (1 kHz, 3 kHz, 5 kHz) para caracterizar 
+        la linealidad de la respuesta.
+      </p>
+
+      <div class="img-grid-3">
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_fv_prueba_1khz.jpg" alt="Prueba 1 kHz">
+          <div class="img-caption">1 kHz</div>
+        </div>
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_fv_prueba_3khz.jpg" alt="Prueba 3 kHz">
+          <div class="img-caption">3 kHz</div>
+        </div>
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_fv_prueba_5khz.jpg" alt="Prueba 5 kHz">
+          <div class="img-caption">5 kHz</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Amp Instrumentación -->
+    <div style="margin-bottom:3.5rem;">
+      <div class="sec-label" style="margin-bottom:0.8rem;">Circuito 3 — Amplificador de Instrumentación</div>
+      <h3 style="font-family:var(--font-serif);font-size:1.5rem;font-weight:400;color:var(--ink);margin-bottom:1rem;">
+        Alta ganancia, <em>alta inmunidad al ruido</em>
+      </h3>
+      <p class="sec-text">
+        El amplificador de instrumentación es el circuito que permite medir señales débiles en ambientes con 
+        interferencias. Su fortaleza: una ganancia de modo diferencial alta y una ganancia de modo común 
+        muy baja — caracterizada por el CMRR (Common Mode Rejection Ratio).
+      </p>
+
+      <div class="img-grid-2">
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_inst_esquematico.jpg" alt="Esquemático amplificador de instrumentación">
+          <div class="img-caption">Fig. 3.1 — Esquemático del amplificador</div>
+        </div>
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_inst_vout.jpg" alt="Señal de salida Vout">
+          <div class="img-caption">Fig. 3.2 — Señal de salida medida</div>
+        </div>
+      </div>
+
+      <div class="img-wrap">
+        <img src="imagenes_proyecto1/img_inst_cmrr.png" alt="Medición CMRR">
+        <div class="img-caption">Fig. 3.3 — Caracterización CMRR</div>
+      </div>
+    </div>
+
+    <!-- Schmitt Trigger -->
+    <div style="margin-bottom:3.5rem;">
+      <div class="sec-label" style="margin-bottom:0.8rem;">Circuito 4 — Comparador con Histéresis (Schmitt Trigger)</div>
+      <h3 style="font-family:var(--font-serif);font-size:1.5rem;font-weight:400;color:var(--ink);margin-bottom:1rem;">
+        Un comparador que no <em>titubea</em>
+      </h3>
+      <p class="sec-text">
+        El Schmitt Trigger resuelve el problema del comparador convencional frente a señales con ruido: 
+        mediante la histéresis — dos umbrales de conmutación diferentes — evita las oscilaciones 
+        indeseadas en la salida cuando la señal de entrada bordea el umbral de comparación.
+      </p>
+
+      <div class="img-grid-2">
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_schmitt_esquematico.jpg" alt="Schmitt Trigger esquemático">
+          <div class="img-caption">Fig. 4.1 — Esquemático</div>
+        </div>
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_schmitt_osciloscopio.jpg" alt="Schmitt Trigger osciloscopio">
+          <div class="img-caption">Fig. 4.2 — Medición en osciloscopio</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Oscilador Wien -->
+    <div style="margin-bottom:3.5rem;">
+      <div class="sec-label" style="margin-bottom:0.8rem;">Circuito 5 — Oscilador de Wien</div>
+      <h3 style="font-family:var(--font-serif);font-size:1.5rem;font-weight:400;color:var(--ink);margin-bottom:1rem;">
+        Generar una señal desde <em>cero</em>
+      </h3>
+      <p class="sec-text">
+        El oscilador de Wien genera una señal sinusoidal estable sin señal de entrada — 
+        únicamente con la alimentación del Op-Amp y una red de realimentación RC cuidadosamente diseñada 
+        para que la condición de oscilación se cumpla en una sola frecuencia.
+      </p>
+
+      <div class="img-grid-2">
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_wien_esquematico.png" alt="Oscilador Wien esquemático">
+          <div class="img-caption">Fig. 5.1 — Esquemático</div>
+        </div>
+        <div class="img-wrap">
+          <img src="imagenes_proyecto1/img_wien_scope.jpg" alt="Señal oscilador Wien">
+          <div class="img-caption">Fig. 5.2 — Señal en osciloscopio</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 RESULTADOS -->
+  <section class="sec fade-up" id="resultados">
+    <div class="sec-label">Lo que aprendimos</div>
+    <h2 class="sec-title">Resultados y <em>conclusiones</em></h2>
+    <p class="sec-text">
+      Cada circuito fue validado midiendo sus parámetros clave y comparándolos con la simulación. 
+      El proceso de validación confirmó el diseño matemático en todos los casos dentro de márgenes aceptables.
+    </p>
+
+    <div class="story-steps">
+      <div class="story-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">El modelo matemático es confiable</div>
+          <div class="step-desc">Los valores calculados analíticamente se verificaron en simulación con diferencias menores al 2% en todos los circuitos.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Los componentes reales introducen variación</div>
+          <div class="step-desc">Las tolerancias de resistencias y condensadores (5–10%) explican las diferencias entre el valor simulado y el medido en protoboard.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">El CMRR determina la calidad de la instrumentación</div>
+          <div class="step-desc">El amplificador de instrumentación demostró alta inmunidad al ruido de modo común — validando su uso en aplicaciones de medición de señales débiles.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">La histéresis elimina el ruido de conmutación</div>
+          <div class="step-desc">El Schmitt Trigger funcionó con la ventana de histéresis diseñada, demostrando salida limpia incluso con señal de entrada con ruido superpuesto.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:2rem;">
+      <p>
+        <strong>Conclusión central:</strong> el ciclo diseño → simulación → implementación → validación 
+        es la forma correcta de aprender electrónica analógica. Los errores del circuito físico 
+        no son fallos — son información sobre el mundo real que ninguna simulación puede entregar.
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div>Dominy Cadena · Proyecto 01 · EA3 · USCO · 2026</div>
+  <div><a href="proyecto2.html" style="color:rgba(255,255,255,0.3);text-decoration:none;">Proyecto 02 →</a></div>
+</footer>
+
+<script>
+/* particles */
+const canvas = document.getElementById('ptc');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const pts = Array.from({length: 30}, () => ({
+  x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+  r: Math.random()*1.2+0.4, vx: (Math.random()-.5)*.15, vy: (Math.random()-.5)*.15,
+  a: Math.random()*.2+0.06
+}));
+(function draw() {
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p => {
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle = `rgba(37,99,235,${p.a})`; ctx.fill();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+  });
+  requestAnimationFrame(draw);
+})();
+
+/* fade observer */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => { if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'),i*80); });
+}, {threshold: 0.06});
+document.querySelectorAll('.fade-up,.fade-in').forEach(el => obs.observe(el));
+
+/* nav */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', scrollY>40));
+</script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P4 · Sintetizador Analógico ECG · Dominy Cadena</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]}}</script>
+<style>
+/* ── ANIMACIÓN LATIDO ECG ── */
+@keyframes ecgPulse {
+  0%   { stroke-dashoffset: 600; }
+  100% { stroke-dashoffset: 0; }
+}
+.ecg-line {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: ecgPulse 3s ease-in-out infinite;
+}
+
+.ecg-hero-widget {
+  background: rgba(37,99,235,0.04);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  overflow: hidden;
+}
+.ecg-svg-wrap {
+  width: 100%;
+  height: 100px;
+}
+.ecg-label-row {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 0.8rem;
+}
+.ecg-wave-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+  text-align: center;
+}
+.ecg-wave-label span {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--blue);
+  font-family: var(--font-serif);
+}
+</style>
+</head>
+<body class="proyecto-page">
+
+<canvas id="ptc"></canvas>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    Cadena
+    <span>Ingeniería Electrónica · USCO · 2026</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:2rem;">
+    <a href="#origen" class="nav-link">El reto</a>
+    <a href="#arquitectura" class="nav-link">Arquitectura</a>
+    <a href="#patologias" class="nav-link">Patologías</a>
+    <a href="index.html#proyectos" class="nav-back">← Portafolio</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="proy-hero">
+  <div>
+    <div class="breadcrumb"><a href="index.html">Portafolio</a> / Proyecto 04</div>
+    <div class="project-num">Proyecto 04 / 04</div>
+    <h1 class="hero-title">
+      Sintetizador<br>Analógico de<br><em>Señal ECG</em>
+    </h1>
+    <p class="proy-hero-desc">
+      Generar analógicamente la señal eléctrica del corazón humano — con sus cinco subondas 
+      y tres anomalías cardíacas — usando únicamente circuitos con amplificadores operacionales.
+    </p>
+    <div class="status-row">
+      <span class="badge badge-ok">● Finalizado</span>
+      <span class="badge badge-info">Proyecto Final EA3</span>
+      <span class="badge badge-info">5 subondas · 3 patologías</span>
+    </div>
+    <div class="proy-hero-meta" style="margin-top:2rem;">
+      <div class="meta-cell">
+        <div class="meta-label">Subondas modeladas</div>
+        <div class="meta-val">P, Q, R, S, T</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Frecuencia cardíaca</div>
+        <div class="meta-val">60–100 lpm</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Ancho de banda</div>
+        <div class="meta-val">0.05 – 150 Hz</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proy-hero-right">
+    <div class="phr-title">Módulos del sistema</div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;">
+      <div class="result-chip info">1 · Generador de ritmo base</div>
+      <div class="result-chip info">2 · Síntesis de subondas P,Q,R,S,T</div>
+      <div class="result-chip info">3 · Sumador ponderado</div>
+      <div class="result-chip info">4 · Amplificador de salida</div>
+    </div>
+    <div style="margin-top:1rem;">
+      <div class="phr-title">Patologías modeladas</div>
+      <div class="result-chip warn" style="margin-bottom:0.5rem;">Bradicardia sinusal</div>
+      <div class="result-chip warn" style="margin-bottom:0.5rem;">Taquicardia ventricular</div>
+      <div class="result-chip warn">Bloqueo AV de 1er grado</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="content-wrap">
+
+  <!-- 01 EL RETO -->
+  <section class="sec fade-up" id="origen">
+    <div class="sec-label">El reto del proyecto final</div>
+    <h2 class="sec-title">Imitar el <em>corazón</em> con Op-Amps</h2>
+    <p class="sec-text">
+      El electrocardiograma (ECG) es la representación eléctrica de la actividad del corazón humano. 
+      Cada latido genera un patrón eléctrico reconocible: las ondas P, Q, R, S y T. 
+      Cada una tiene un origen fisiológico distinto — y una morfología, amplitud y duración características.
+    </p>
+
+    <!-- Imagen diagrama ECG -->
+    <div class="img-wrap">
+      <img src="imagenes_proyecto4/img_diagramaECG.jpeg" alt="Diagrama de la señal ECG con sus cinco subondas">
+      <div class="img-caption">Fig. 1.1 — Señal ECG normal: ondas P, Q, R, S, T con sus intervalos y amplitudes de referencia clínica</div>
+    </div>
+
+    <p class="sec-text">
+      El reto del proyecto final fue construir analógicamente ese patrón. No con un microcontrolador 
+      que calcule y dibuje una onda — sino con circuitos de amplificadores operacionales que generen, 
+      formen y sumen pulsos eléctricos para reproducir la morfología completa del ciclo cardíaco.
+    </p>
+
+    <!-- Widget animado ECG -->
+    <div class="ecg-hero-widget fade-up">
+      <div class="ecg-svg-wrap">
+        <svg viewBox="0 0 700 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100">
+          <!-- línea base -->
+          <line x1="0" y1="60" x2="700" y2="60" stroke="#e2e8f0" stroke-width="1"/>
+          <!-- señal ECG estilizada -->
+          <polyline class="ecg-line"
+            fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+            points="
+              0,60
+              40,60
+              55,55
+              65,55
+              75,40
+              85,65
+              95,60
+              100,60
+              105,15
+              110,85
+              115,30
+              125,60
+              135,60
+              155,50
+              175,60
+              200,60
+              240,60
+              255,55
+              265,55
+              275,40
+              285,65
+              295,60
+              300,60
+              305,15
+              310,85
+              315,30
+              325,60
+              335,60
+              355,50
+              375,60
+              400,60
+              440,60
+              455,55
+              465,55
+              475,40
+              485,65
+              495,60
+              500,60
+              505,15
+              510,85
+              515,30
+              525,60
+              535,60
+              555,50
+              575,60
+              600,60
+              640,60
+              700,60
+            "
+          />
+          <!-- etiquetas subondas primer ciclo -->
+          <text x="68" y="38" font-size="9" fill="#2563eb" font-family="serif" font-style="italic">P</text>
+          <text x="103" y="12" font-size="9" fill="#2563eb" font-family="serif" font-style="italic">R</text>
+          <text x="107" y="96" font-size="9" fill="#2563eb" font-family="serif" font-style="italic">S</text>
+          <text x="78" y="78" font-size="9" fill="#2563eb" font-family="serif" font-style="italic">Q</text>
+          <text x="155" y="46" font-size="9" fill="#2563eb" font-family="serif" font-style="italic">T</text>
+        </svg>
+      </div>
+      <div class="ecg-label-row">
+        <div class="ecg-wave-label"><span>P</span>Despolarización auricular</div>
+        <div class="ecg-wave-label"><span>QRS</span>Despolarización ventricular</div>
+        <div class="ecg-wave-label"><span>T</span>Repolarización ventricular</div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <p>
+        <strong>¿Por qué importa esto?</strong> Un sintetizador analógico de ECG es una herramienta 
+        real de calibración para equipos de monitoreo cardíaco. Hospitales y laboratorios los usan 
+        para verificar que sus monitores responden correctamente a señales de referencia conocidas.
+      </p>
+    </div>
+
+    <div class="metric-row">
+      <div class="metric-cell">
+        <span class="metric-val">5</span>
+        <span class="metric-label">Subondas del ECG</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-val">600–1000ms</span>
+        <span class="metric-label">Duración ciclo cardíaco normal</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-val">3</span>
+        <span class="metric-label">Patologías modeladas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 ARQUITECTURA -->
+  <section class="sec fade-up" id="arquitectura">
+    <div class="sec-label">La solución técnica</div>
+    <h2 class="sec-title">Síntesis por conformación analógica <em>de pulsos</em></h2>
+    <p class="sec-text">
+      La señal ECG se representa como la suma de subondas individuales generadas a partir 
+      de pulsos eléctricos moldeados por bloques analógicos convencionales. 
+      La estrategia: generar cada subonda de forma independiente y luego sumarlas.
+    </p>
+    <p class="sec-text">
+      Este enfoque tiene una ventaja clave sobre la síntesis digital: cada módulo puede 
+      ajustarse de forma independiente en amplitud, anchura y polaridad, 
+      lo que facilita reproducir tanto el ECG normal como las anomalías.
+    </p>
+
+    <div class="story-steps">
+      <div class="story-step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">Generador de ritmo base</div>
+          <div class="step-desc">Oscilador que define la frecuencia cardíaca del sistema (60–100 lpm). Genera el pulso de sincronización que dispara la secuencia de subondas. Frecuencia ajustable para simular distintas condiciones clínicas.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">Síntesis de subondas (P, Q, R, S, T)</div>
+          <div class="step-desc">Cada subonda es un pulso modelado con combinaciones de integradores, comparadores y circuitos de temporización. La amplitud y duración de cada subonda se configuran mediante resistencias ajustables.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">Sumador ponderado analógico</div>
+          <div class="step-desc">Un amplificador sumador combina las cinco subondas con sus pesos relativos correctos para reproducir la morfología completa del ciclo cardíaco. La ponderación determina la forma final de la onda.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <div class="step-title">Amplificador de salida</div>
+          <div class="step-desc">Adapta la impedancia y el nivel de señal para conectarse a la entrada de un osciloscopio o monitor ECG real. La salida es una señal continua y estable del ciclo cardíaco completo.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 PATOLOGÍAS -->
+  <section class="sec fade-up" id="patologias">
+    <div class="sec-label">Las anomalías modeladas</div>
+    <h2 class="sec-title">Tres <em>patologías</em> cardíacas reproducibles</h2>
+    <p class="sec-text">
+      Las tres anomalías fueron seleccionadas para cubrir los distintos tipos de alteración 
+      en la señal ECG: cambios en el intervalo, cambios en la morfología y cambios en el nivel de referencia.
+      Cada patología se reproduce modificando parámetros específicos del sintetizador.
+    </p>
+
+    <div class="story-steps">
+      <div class="story-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Bradicardia sinusal</div>
+          <div class="step-desc">Frecuencia cardíaca menor a 60 lpm. Se reproduce reduciendo la frecuencia del oscilador base. El ritmo es regular pero lento. Todos los intervalos P-QRS-T se alargan proporcionalmente.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Taquicardia ventricular</div>
+          <div class="step-desc">Frecuencia cardíaca mayor a 100 lpm con QRS ancho y morfología alterada. Requiere modificar tanto la frecuencia del oscilador como la forma de la subonda QRS.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Bloqueo AV de 1er grado</div>
+          <div class="step-desc">Alargamiento del intervalo PR por encima de 200 ms. Se reproduce modificando el retardo entre la onda P y el complejo QRS mediante un circuito de temporización ajustable.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Imágenes de patologías cardíacas -->
+    <div class="img-grid-3" style="margin-top:2.5rem;">
+      <div class="img-wrap">
+        <img src="imagenes_proyecto4/fibrilacion_Auricular.jpeg" alt="Fibrilación auricular en señal ECG">
+        <div class="img-caption">Fig. 3.1 — Fibrilación auricular: ausencia de onda P, ritmo R-R irregular</div>
+      </div>
+      <div class="img-wrap">
+        <img src="imagenes_proyecto4/hipertrofia_ventricular.jpeg" alt="Hipertrofia ventricular en señal ECG">
+        <div class="img-caption">Fig. 3.2 — Hipertrofia ventricular: QRS de alta amplitud, cambios en repolarización</div>
+      </div>
+      <div class="img-wrap">
+        <img src="imagenes_proyecto4/inversion_onda_T.jpeg" alt="Inversión de onda T en señal ECG">
+        <div class="img-caption">Fig. 3.3 — Inversión de onda T: indicador de isquemia o repolarización anormal</div>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:1.5rem;">
+      <p>
+        <strong>Interpretación técnica:</strong> Cada patología se traduce directamente en parámetros ajustables del sintetizador analógico.
+        La fibrilación auricular suprime la onda P y genera intervalos R-R variables mediante modulación del oscilador base.
+        La hipertrofia ventricular escala la amplitud del bloque QRS.
+        La inversión de onda T invierte la polaridad del módulo de síntesis correspondiente.
+        Este mapeo fisiopatología–parámetro de circuito es la fortaleza del diseño modular adoptado.
+      </p>
+    </div>
+
+    <div class="highlight-box" style="margin-top:1rem;">
+      <p>
+        <strong>Estado actual del proyecto:</strong> la arquitectura modular está definida y documentada. 
+        La división en cuatro módulos con interfaces claras permite el desarrollo paralelo, 
+        reduciendo el tiempo de integración y facilitando la depuración modular antes del ensamble final.
+      </p>
+    </div>
+
+    <div class="story-steps" style="margin-top:2rem;">
+      <div class="story-step">
+        <div class="step-num">✓</div>
+        <div class="step-content">
+          <div class="step-title">Marco conceptual completo</div>
+          <div class="step-desc">Todos los parámetros del ECG normal y de las tres patologías están documentados con sus valores de referencia clínica.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">✓</div>
+        <div class="step-content">
+          <div class="step-title">Arquitectura del sistema definida</div>
+          <div class="step-desc">Los cuatro módulos con sus interfaces están especificados. El plan de implementación y las responsabilidades del equipo están asignadas.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">→</div>
+        <div class="step-content">
+          <div class="step-title">Implementación y validación — en progreso</div>
+          <div class="step-desc">La construcción del prototipo está en curso. La validación final se realizará con un osciloscopio y comparación visual con señales ECG de referencia clínica.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div>Dominy Cadena · Proyecto 04 · EA3 · USCO · 2026</div>
+  <div><a href="index.html" style="color:rgba(255,255,255,0.3);text-decoration:none;">← Portafolio</a></div>
+</footer>
+
+<script>
+const canvas = document.getElementById('ptc');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const pts = Array.from({length:30},()=>({
+  x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+  r:Math.random()*1.2+0.4, vx:(Math.random()-.5)*.15, vy:(Math.random()-.5)*.15,
+  a:Math.random()*.2+0.06
+}));
+(function draw(){
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(37,99,235,${p.a})`; ctx.fill();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+  });
+  requestAnimationFrame(draw);
+})();
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{ if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'),i*80); });
+},{threshold:0.06});
+document.querySelectorAll('.fade-up,.fade-in').forEach(el=>obs.observe(el));
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',scrollY>40));
+</script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P2 · Instrumentación Analógica Lean Startup · Dominy Cadena</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]}}</script>
+<style>
+/* ── DIAGRAMA DE BLOQUES ── */
+.block-diagram-wrap {
+  overflow-x: auto;
+  padding: 2.5rem 1rem;
+  background: rgba(37,99,235,0.03);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  margin: 2.5rem 0;
+}
+
+.block-diagram {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-width: 900px;
+  position: relative;
+}
+
+.bd-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.bd-block {
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  min-width: 110px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.bd-block:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.10); }
+
+.bd-block-title {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+  line-height: 1.2;
+}
+.bd-block-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.15rem;
+}
+.bd-block-detail {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  color: #888;
+  letter-spacing: 0.05em;
+}
+.bd-block-icon {
+  font-size: 1.4rem;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+/* Colores por bloque */
+.bd-sensor-k  { background: #fff7ed; border: 2px solid #f97316; }
+.bd-sensor-k .bd-block-sub { color: #ea580c; }
+.bd-sensor-cold { background: #eff6ff; border: 2px solid #3b82f6; }
+.bd-sensor-cold .bd-block-sub { color: #2563eb; }
+.bd-suma      { background: #f5f3ff; border: 2px solid #8b5cf6; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; color: #7c3aed; min-width: unset; padding: 0; }
+.bd-amp       { background: #fdf4ff; border: 2px solid #a855f7; }
+.bd-amp .bd-block-sub { color: #9333ea; }
+.bd-filtro    { background: #ecfdf5; border: 2px solid #10b981; }
+.bd-filtro .bd-block-sub { color: #059669; }
+.bd-escala    { background: #fffbeb; border: 2px solid #f59e0b; }
+.bd-escala .bd-block-sub { color: #d97706; }
+.bd-salida    { background: #f0fdf4; border: 2px solid #22c55e; }
+.bd-salida .bd-block-sub { color: #16a34a; }
+
+/* Flechas */
+.bd-arrow {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0.15rem; padding: 0 0.3rem; flex-shrink: 0;
+}
+.bd-arrow-line {
+  height: 2px; background: var(--line);
+  width: 32px; position: relative;
+}
+.bd-arrow-line::after {
+  content: ''; position: absolute; right: -5px; top: -4px;
+  border: 5px solid transparent; border-left-color: var(--line);
+  border-right: none;
+}
+.bd-arrow-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem; color: var(--text-faint);
+  letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* La sigma vertical-horizontal */
+.bd-sensors-group {
+  display: flex; flex-direction: column; gap: 0.6rem; align-items: center;
+}
+.bd-sensors-col {
+  display: flex; flex-direction: column; gap: 0.6rem;
+}
+
+.bd-legend {
+  display: flex; flex-wrap: wrap; gap: 1rem;
+  justify-content: center; margin-top: 1.2rem;
+  padding-top: 1rem; border-top: 1px solid var(--line);
+}
+.bd-legend-item {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-family: 'DM Mono', monospace; font-size: 0.58rem;
+  color: var(--text-faint); letter-spacing: 0.08em;
+}
+.bd-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+</style>
+</head>
+<body class="proyecto-page">
+
+<canvas id="ptc"></canvas>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    Cadena
+    <span>Ingeniería Electrónica · USCO · 2026</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:2rem;">
+    <a href="#origen" class="nav-link">Origen</a>
+    <a href="#diseno" class="nav-link">Diseño</a>
+    <a href="#validacion" class="nav-link">Validación</a>
+    <a href="index.html#proyectos" class="nav-back">← Portafolio</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="proy-hero">
+  <div>
+    <div class="breadcrumb"><a href="index.html">Portafolio</a> / Proyecto 02</div>
+    <div class="project-num">Proyecto 02 / 04</div>
+    <h1 class="hero-title">
+      Instrumentación<br>Analógica —<br><em>Lean Startup</em>
+    </h1>
+    <p class="proy-hero-desc">
+      Un acondicionador de señal para termocupla tipo K, sin microcontroladores, 
+      diseñado con metodología Lean Startup para resolver una necesidad real en 
+      los laboratorios de la USCO.
+    </p>
+    <div class="status-row">
+      <span class="badge badge-ok">● Completado</span>
+      <span class="badge badge-info">Proyecto Integrador</span>
+      <span class="badge badge-info">MVP analógico</span>
+    </div>
+    <div class="proy-hero-meta" style="margin-top:2rem;">
+      <div class="meta-cell">
+        <div class="meta-label">Sensor</div>
+        <div class="meta-val">Termocupla Tipo K</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Amp. de instrumentación</div>
+        <div class="meta-val">AD620AN</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Error de ganancia</div>
+        <div class="meta-val">0.40%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proy-hero-right">
+    <div class="phr-title">Etapas del MVP</div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;">
+      <div class="result-chip info">1 · Compensación CJC</div>
+      <div class="result-chip info">2 · Amp. de Instrumentación (AD620)</div>
+      <div class="result-chip info">3 · Filtro Sallen-Key activo</div>
+      <div class="result-chip info">4 · Escalamiento de salida</div>
+    </div>
+    <div style="margin-top:1.2rem;">
+      <div class="result-chip ok">Ganancia validada · G = 493</div>
+      <div class="result-chip warn" style="margin-top:0.5rem;">Offset parásito · 53.9%</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="content-wrap">
+
+  <!-- 01 ORIGEN -->
+  <section class="sec fade-up" id="origen">
+    <div class="sec-label">Por qué existe este proyecto</div>
+    <h2 class="sec-title">Un problema <em>real</em> en un laboratorio real</h2>
+    <p class="sec-text">
+      El segundo proyecto integró dos mundos que raramente se combinan en un aula de ingeniería: 
+      la <strong>metodología Lean Startup</strong> de Eric Ries y el diseño de circuitos analógicos. 
+      La pregunta de partida no era técnica — era humana: 
+      <em>¿qué problema real necesita resolver alguien en esta universidad?</em>
+    </p>
+    <p class="sec-text">
+      El equipo visitó cinco laboratorios de la USCO, entrevistando técnicos y docentes. 
+      El patrón era claro: ausencia de sistemas de registro automático para variables como 
+      temperatura, tiempo o velocidad. Sin registro, no hay trazabilidad. Sin trazabilidad, 
+      no hay reproducibilidad.
+    </p>
+
+    <div class="img-wrap">
+      <img src="imagenes_proyecto2/img_tostadora_cafe.jpeg" alt="Tostadora de café CESURCAFÉ, USCO">
+      <div class="img-caption">Tostadora analógica de café en CESURCAFÉ, USCO — el punto de partida del MVP</div>
+    </div>
+
+    <div class="highlight-box">
+      <p>
+        <strong>El hallazgo clave:</strong> la sala CESURCAFÉ, donde se desarrolla tueste, fermentación 
+        y secado de grano, no contaba con ningún sistema de registro automático de temperatura. 
+        Las curvas de tueste se anotaban a mano — impidiendo construir una curva confiable y reproducible.
+      </p>
+    </div>
+
+    <p class="sec-text">
+      La temperatura define la calidad organoléptica del café. Este era el problema. 
+      El MVP tenía impacto directo y medible — y estaba dentro de las capacidades del equipo.
+    </p>
+
+    <div class="story-steps">
+      <div class="story-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Identificar — cinco laboratorios visitados</div>
+          <div class="step-desc">Entrevistas con técnicos y docentes para encontrar el problema de mayor impacto y menor complejidad de implementación.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Delimitar — CESURCAFÉ como foco</div>
+          <div class="step-desc">La tostadora analógica de café fue seleccionada: problema concreto, usuario real, validación posible dentro del semestre.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Construir — MVP analógico en dos semanas</div>
+          <div class="step-desc">Diseño y simulación del acondicionador completo. Sin microcontroladores, sin componentes digitales.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 DISEÑO -->
+  <section class="sec fade-up" id="diseno">
+    <div class="sec-label">La solución técnica</div>
+    <h2 class="sec-title">Cuatro etapas en <em>cascada</em></h2>
+    <p class="sec-text">
+      El MVP consistió en cuatro etapas analógicas conectadas en cascada. Cada etapa tiene una función 
+      específica y ninguna depende de software o microcontrolador. 
+      La señal de temperatura entra como µV desde el termopar y sale como voltaje legible por un multímetro.
+    </p>
+
+    <!-- ── DIAGRAMA DE BLOQUES ── -->
+    <div class="block-diagram-wrap">
+      <div class="block-diagram">
+
+        <!-- SENSORES -->
+        <div class="bd-sensors-col">
+          <div class="bd-block bd-sensor-k">
+            <span class="bd-block-icon">🌡️</span>
+            <div class="bd-block-title">Termopar Tipo K</div>
+            <div class="bd-block-sub">V₁ (V_TC)</div>
+            <div class="bd-block-detail">1.0 mV → 10.2 mV</div>
+          </div>
+          <div style="height:0.6rem;"></div>
+          <div class="bd-block bd-sensor-cold">
+            <span class="bd-block-icon">❄️</span>
+            <div class="bd-block-title">Comp. Unión Fría</div>
+            <div class="bd-block-sub">LM35 (V_CJC)</div>
+            <div class="bd-block-detail">250 mV → 300 mV</div>
+          </div>
+        </div>
+
+        <!-- FLECHA hacia sigma -->
+        <div class="bd-arrow">
+          <div class="bd-arrow-line"></div>
+          <div class="bd-arrow-line" style="width:32px;margin-top:48px;"></div>
+        </div>
+
+        <!-- NODO SUMA -->
+        <div class="bd-suma">Σ</div>
+
+        <!-- FLECHA sigma → amp -->
+        <div class="bd-arrow">
+          <div class="bd-arrow-line"></div>
+        </div>
+
+        <!-- AMP INSTRUMENTACIÓN -->
+        <div class="bd-block bd-amp">
+          <span class="bd-block-icon">⚡</span>
+          <div class="bd-block-title">Amp. Instrumentación</div>
+          <div class="bd-block-sub">AD620AN</div>
+          <div class="bd-block-detail">Ganancia ≈ 45×</div>
+        </div>
+
+        <!-- FLECHA amp → filtro -->
+        <div class="bd-arrow">
+          <div class="bd-arrow-line"></div>
+          <div class="bd-arrow-lbl">V_amp</div>
+        </div>
+
+        <!-- FILTRO -->
+        <div class="bd-block bd-filtro">
+          <span class="bd-block-icon">〰️</span>
+          <div class="bd-block-title">Filtro Pasa-Bajas</div>
+          <div class="bd-block-sub">Salen-Key / TL074</div>
+          <div class="bd-block-detail">fc ≈ 0.16 Hz</div>
+        </div>
+
+        <!-- FLECHA filtro → escala -->
+        <div class="bd-arrow">
+          <div class="bd-arrow-line"></div>
+          <div class="bd-arrow-lbl">V_filt</div>
+        </div>
+
+        <!-- ESCALAMIENTO -->
+        <div class="bd-block bd-escala">
+          <span class="bd-block-icon">↕️</span>
+          <div class="bd-block-title">Escalamiento y Offset</div>
+          <div class="bd-block-sub">TL074 + P_Gain</div>
+          <div class="bd-block-detail">Ajuste 0–5 V</div>
+        </div>
+
+        <!-- FLECHA escala → salida -->
+        <div class="bd-arrow">
+          <div class="bd-arrow-line"></div>
+        </div>
+
+        <!-- SALIDA -->
+        <div class="bd-block bd-salida">
+          <span class="bd-block-icon">🖥️</span>
+          <div class="bd-block-title">Salida Analógica</div>
+          <div class="bd-block-sub">0 V → 5 V</div>
+          <div class="bd-block-detail">→ Microcontrolador</div>
+        </div>
+
+      </div><!-- /block-diagram -->
+
+      <div class="bd-legend">
+        <div class="bd-legend-item"><div class="bd-legend-dot" style="background:#f97316;"></div>Termopar Tipo K</div>
+        <div class="bd-legend-item"><div class="bd-legend-dot" style="background:#3b82f6;"></div>Compensación CJC</div>
+        <div class="bd-legend-item"><div class="bd-legend-dot" style="background:#a855f7;"></div>Amp. Instrumentación AD620AN</div>
+        <div class="bd-legend-item"><div class="bd-legend-dot" style="background:#10b981;"></div>Filtro Sallen-Key pasa-bajas</div>
+        <div class="bd-legend-item"><div class="bd-legend-dot" style="background:#f59e0b;"></div>Escalamiento y offset</div>
+        <div class="bd-legend-item"><div class="bd-legend-dot" style="background:#22c55e;"></div>Salida 0–5 V</div>
+      </div>
+    </div><!-- /block-diagram-wrap -->
+
+    <div class="img-wrap">
+      <img src="imagenes_proyecto2/img_esquematico_MVP.jpeg" alt="Esquemático MVP — Amplificador de instrumentación">
+      <div class="img-caption">Fig. 2.1 — Esquemático del MVP: cuatro etapas en cascada</div>
+    </div>
+
+    <div class="metric-row">
+      <div class="metric-cell">
+        <span class="metric-val">G = 495</span>
+        <span class="metric-label">Ganancia diseñada</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-val">41 µV/°C</span>
+        <span class="metric-label">Sensibilidad termocupla K</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-val">0–230 °C</span>
+        <span class="metric-label">Rango de medición</span>
+      </div>
+    </div>
+
+    <div class="formula-box">
+      <span class="formula-label">Ganancia AD620AN en función de R_G</span>
+      \[ G = \frac{49.4\,\text{k}\Omega}{R_G} + 1 \quad\Rightarrow\quad R_G = \frac{49.4\,\text{k}\Omega}{G - 1} \approx 100\,\Omega \]
+    </div>
+  </section>
+
+  <!-- 03 VALIDACIÓN -->
+  <section class="sec fade-up" id="validacion">
+    <div class="sec-label">Lo que encontramos</div>
+    <h2 class="sec-title">Resultados honestos —<br>ganancia validada, <em>offset identificado</em></h2>
+    <p class="sec-text">
+      La validación experimental produjo dos resultados en apariencia contradictorios. 
+      Ambos son correctos — y juntos cuentan la historia completa.
+    </p>
+
+    <div class="img-wrap">
+      <img src="imagenes_proyecto2/img_curva_tueste.jpeg" alt="Curva de tueste de café registrada">
+      <div class="img-caption">Fig. 3.1 — Curva de tueste de café registrada con el MVP en CESURCAFÉ</div>
+    </div>
+
+    <div class="highlight-box">
+      <p>
+        <strong>La ganancia funcionó:</strong> G<sub>exp</sub> = 493 frente a G<sub>sim</sub> = 493.2. 
+        Error: <strong>0.40%</strong>. El diseño matemático fue correcto.
+      </p>
+    </div>
+
+    <p class="sec-text">
+      Sin embargo, el error de offset fue del 53.9%. ¿Contradicción? No. El offset no es un error de diseño — 
+      es una consecuencia del efecto Seebeck parasítico en las juntas cobre-protoboard, 
+      que actúan como termopares adicionales no controlados. A temperatura ambiente, generan décadas de µV 
+      que el amplificador amplifica junto con la señal útil.
+    </p>
+
+    <div class="story-steps">
+      <div class="story-step">
+        <div class="step-num">✓</div>
+        <div class="step-content">
+          <div class="step-title">Ganancia validada · 0.40% de error</div>
+          <div class="step-desc">La arquitectura de amplificación es técnicamente sólida. El valor de R_G y la configuración del AD620AN funcionan según el diseño.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">Offset parásito · 53.9% — de implementación, no de diseño</div>
+          <div class="step-desc">Las juntas Cu-protoboard generan voltaje termoeléctrico parásito. Solución: integrado AD594 con CJC incorporado o trimmer de offset en pin 5 del AD620AN.</div>
+        </div>
+      </div>
+      <div class="story-step">
+        <div class="step-num">→</div>
+        <div class="step-content">
+          <div class="step-title">Decisión fundamentada en datos</div>
+          <div class="step-desc">La retroalimentación de la encargada de CESURCAFÉ permitió una decisión informada: pivote a AD594 en la siguiente iteración. El ciclo Lean funciona con evidencia, no con intuición.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:2rem;">
+      <p>
+        <strong>La lección más importante de este proyecto:</strong> un ingeniero que identifica 
+        con precisión la causa del error y propone la corrección correcta vale más que uno que 
+        oculta los resultados que no salieron como esperaba.
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div>Dominy Cadena · Proyecto 02 · EA3 · USCO · 2026</div>
+  <div><a href="proyecto3.html" style="color:rgba(255,255,255,0.3);text-decoration:none;">Proyecto 03 →</a></div>
+</footer>
+
+<script>
+const canvas = document.getElementById('ptc');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const pts = Array.from({length:30}, ()=>({
+  x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+  r:Math.random()*1.2+0.4, vx:(Math.random()-.5)*.15, vy:(Math.random()-.5)*.15,
+  a:Math.random()*.2+0.06
+}));
+(function draw() {
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(37,99,235,${p.a})`; ctx.fill();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+  });
+  requestAnimationFrame(draw);
+})();
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{ if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'),i*80); });
+},{threshold:0.06});
+document.querySelectorAll('.fade-up,.fade-in').forEach(el=>obs.observe(el));
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',scrollY>40));
+</script>
+</body>
+</html>
